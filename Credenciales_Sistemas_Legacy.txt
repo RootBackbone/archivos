@@ -1,0 +1,29 @@
+========================================================
+ CIBEREX - Terminal Portuaria Multiproposito Callao
+ Inventario de credenciales - Sistemas Legacy
+ USO INTERNO - NO DISTRIBUIR
+========================================================
+
+NOTA DEL AREA DE TI (Diego Salazar, 02/2025):
+Este listado corresponde a sistemas dados de baja o migrados
+durante el proyecto de modernizacion 2023-2024. Se mantiene
+como referencia historica para auditoria. NINGUNA de estas
+credenciales deberia seguir siendo valida. Pendiente
+confirmar con el proveedor la baja definitiva del acceso
+al portal de proveedores legacy (ver ultima fila).
+
+--------------------------------------------------------
+Sistema                  Usuario         Password (legacy)
+--------------------------------------------------------
+TOS v1 (dado de baja)     admin_tos       T3rminal_2019!
+Portal RRHH (migrado)     rrhh_svc        Rh_C4ll40_18
+VPN antigua (Cisco ASA)   vpn_backup      B4ckup#Vpn22
+Consola grua P1 (legacy)  grua_admin      Grua_P1_2020
+Portal proveedores legacy proveedor_svc   Prov_2021_temp
+
+--------------------------------------------------------
+Estas credenciales pertenecen a sistemas fuera de servicio.
+Si algun sistema activo responde con alguna de estas
+combinaciones, reportar de inmediato a soporte-ti@ciberex.local
+como hallazgo de auditoria (reutilizacion de contraseña legacy).
+--------------------------------------------------------
