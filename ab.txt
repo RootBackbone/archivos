@@ -1,0 +1,70 @@
+python3 << 'EOF'
+import numpy as np
+from scipy.io import wavfile
+
+rate, data = wavfile.read("/root/Stego Artifacts/Audio.wav")
+if data.ndim > 1:
+    data = data[:, 0]
+data = data.astype(np.float32)
+
+# Energía en ventanas de 10ms
+win = int(rate * 0.01)
+energy = np.array([np.mean(np.abs(data[i:i+win])) for i in range(0, len(data)-win, win)])
+threshold = (np.max(energy) + np.min(energy)) / 2
+bits = (energy > threshold).astype(int)
+
+# Agrupar runs
+runs = []
+val, count = bits[0], 1
+for b in bits[1:]:
+    if b == val:
+        count += 1
+    else:
+        runs.append((val, count))
+        val, count = b, 1
+runs.append((val, count))
+
+# Calcular unidad base (dit)
+on_lens = sorted([r[1] for r in runs if r[0] == 1])
+print("ON lengths:", on_lens[:30])
+print("OFF lengths:", sorted([r[1] for r in runs if r[0] == 0])[:30])
+
+# Asumir dit = mínimo on
+dit = on_lens[0] if on_lens else 1
+
+MORSE = {
+    '.-':'A','-.':'B','-.-.':'C','-..':'D','.':'E','..-.':'F',
+    '--.':'G','....':'H','..':'I','.---':'J','-.-':'K','.-..':'L',
+    '--':'M','-.':'N','---':'O','.--.':'P','--.-':'Q','.-.':'R',
+    '...':'S','-':'T','..-':'U','...-':'V','.--':'W','-..-':'X',
+    '-.--':'Y','--..':'Z','-----':'0','.----':'1','..---':'2',
+    '...--':'3','....-.':'4','.....' :'5','-....':'6','--...':'7',
+    '---..':'8','----.':'9'
+}
+
+def decode(runs, dit):
+    result = ''
+    current_char = ''
+    for val, count in runs:
+        units = round(count / dit)
+        if val == 1:
+            current_char += '.' if units <= 2 else '-'
+        else:
+            if units <= 2:
+                pass  # entre dits
+            elif units <= 4:
+                result += MORSE.get(current_char, '?')
+                current_char = ''
+            else:
+                result += MORSE.get(current_char, '?')
+                current_char = ''
+                result += ' '
+    if current_char:
+        result += MORSE.get(current_char, '?')
+    return result
+
+# Intentar con dit automático
+for candidate in set(on_lens[:5]):
+    msg = decode(runs, candidate)
+    print(f"dit={candidate}: {msg}")
+EOF
